@@ -2,9 +2,13 @@
 
 var TYPES = ['palace', 'flat', 'house', 'bungalo'];
 var TITLES = [];
-var TIME = ['12:00', '13:00', '14:00'];
+var TIMES = ['12:00', '13:00', '14:00'];
 var FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
 var PHOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
+var MIN_X_LOCATION = 0;
+var MAX_X_LOCATION = 1140;
+var MIN_Y_LOCATION = 130;
+var MAX_Y_LOCATION = 630;
 
 document.querySelector('.map').classList.remove('map--faded');
 
@@ -37,20 +41,19 @@ var getRandomArray = function (array, newArray) {
 
 var similarPins = [];
 
-mixArray(TIME);
+mixArray(TIMES);
 mixArray(TITLES);
 mixArray(TYPES);
 mixArray(FEATURES);
 mixArray(PHOTOS);
 
-var imageNumber = 1;
 var createSimilarPinsArray = function () {
   for (var i = 0; i < 8; i++) {
-    var locationX = getRandomNumber(0, 1140);
-    var locationY = getRandomNumber(130, 630);
+    var locationX = getRandomNumber(MIN_X_LOCATION, MAX_X_LOCATION);
+    var locationY = getRandomNumber(MIN_Y_LOCATION, MAX_Y_LOCATION);
     similarPins.push(
         {
-          author: {avatar: 'img/avatars/user0' + imageNumber + '.png'},
+          author: {avatar: 'img/avatars/user0' + i + '.png'},
           offer: {
             title: TITLES[i],
             address: locationX + ', ' + locationY,
@@ -58,8 +61,8 @@ var createSimilarPinsArray = function () {
             type: TYPES[i],
             rooms: getRandomNumber(1, 5),
             guests: getRandomNumber(1, 8),
-            checkin: TIME[i],
-            checkout: TIME[i],
+            checkin: TIMES[i],
+            checkout: TIMES[i],
             features: getRandomArray(FEATURES),
             description: 'описание',
             photos: getRandomArray(PHOTOS)
@@ -70,17 +73,17 @@ var createSimilarPinsArray = function () {
           }
         }
     );
-    imageNumber += 1;
   }
 };
 
 createSimilarPinsArray();
 
-var renderSimilarPin = function (similarpin) {
+var renderSimilarPin = function (similarPin) {
   var pinElement = similarTemplatePin.cloneNode(true);
-  pinElement.style = 'left: ' + similarpin.location.x + 'px; top: ' + similarpin.location.y + 'px;';
-  pinElement.querySelector('img').src = similarpin.author.avatar;
-  pinElement.alt = similarpin.offer.title;
+  pinElement.style.left = similarPin.location.x + 'px';
+  pinElement.style.top = similarPin.location.y + 'px';
+  pinElement.querySelector('img').src = similarPin.author.avatar;
+  pinElement.alt = similarPin.offer.title;
 
   return pinElement;
 };
