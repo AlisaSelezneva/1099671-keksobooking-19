@@ -114,6 +114,22 @@ var getTypes = function (type) {
 
 var fragment = document.createDocumentFragment();
 
+var renderFeatures = function (element, features) {
+  element.querySelector('.popup__features').innerHTML = '';
+  var featuresFragment = document.createDocumentFragment();
+
+  for (var i = 0; i < features.length; i++) {
+    var newFeature = document.createElement('li');
+    newFeature.className = 'popup__feature popup__feature--' + features[i];
+    featuresFragment.appendChild(newFeature);
+
+  }
+  element.querySelector('.popup__features').appendChild(featuresFragment);
+  if (features.length === 0) {
+    element.querySelector('.popup__features').remove();
+  }
+};
+
 var isNotEmpty = function (data) {
   return typeof data !== 'undefined' && data.length > 0;
 };
@@ -167,12 +183,7 @@ var createCard = function (card) {
     hideElement(popupTime);
   }
 
-  var popupFeatures = cardElement.querySelector('.popup__features');
-  if (isNotEmpty(card.offer.features)) {
-    popupFeatures.innerHTML = card.offer.features.join(', ');
-  } else {
-    hideElement(popupFeatures);
-  }
+  renderFeatures(cardElement, card.offer.features);
 
   var popupDescription = cardElement.querySelector('.popup__description');
   if (isNotEmpty(card.offer.description)) {
@@ -194,6 +205,7 @@ var createCard = function (card) {
   } else {
     hideElement(popupPhoto);
   }
+
 
   var popupAvatar = cardElement.querySelector('.popup__avatar ');
   if (isNotEmpty(card.author.avatar)) {
