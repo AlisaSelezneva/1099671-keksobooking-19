@@ -24,7 +24,7 @@ var getRandomNumber = function (min, max) {
 };
 
 var getRandomArray = function (array) {
-  return array.slice(0, getRandomNumber(1, array.length + 1));
+  return array.slice(0, getRandomNumber(1, array.length));
 };
 
 var createSimilarPinsArray = function (count) {
@@ -229,7 +229,7 @@ var fieldsetInputs = document.querySelectorAll('.ad-form__element');
 var adForm = document.querySelector('.ad-form');
 var adSubmit = adForm.querySelector('.ad-form__submit');
 var fieldsetAddress = document.querySelector('#address');
-var mapFilters = document.querySelector('.map__filters');
+var mapFilters = document.querySelector('.map__filters').children;
 var mapPinMain = document.querySelector('.map__pin--main');
 var fieldsetCapacity = document.querySelector('#capacity');
 var roomNumber = document.querySelector('#room_number');
@@ -255,80 +255,62 @@ var deactivateMap = function () {
   fieldsetHeaders.disabled = true;
   fieldsetAddress.value = mainPinCoordinate;
   fieldsetAddress.readOnly = true;
-  mapFilters.classList.add('map__filters--disabled');
+  map.classList.add('map--faded');
   toggleElementAvailability(fieldsetInputs, true);
 };
 
-var activatePageHandlerKeydown = function (evt) {
+var activatePage = function () {
+  renderPins(offers);
+  map.classList.remove('map--faded');
+  adForm.classList.remove('ad-form--disabled');
+  fieldsetHeaders.disabled = false;
+  fieldsetAddress.value = mainPinCoordinateActive;
+  toggleElementAvailability(mapFilters, true);
+  toggleElementAvailability(fieldsetInputs, false);
+
+  mapPinMain.removeEventListener('mousedown', activatePageMousedownHandler);
+  mapPinMain.removeEventListener('keydown', activatePageKeydownHandler);
+
+};
+
+var activatePageKeydownHandler = function (evt) {
   if (evt.key === ENTER) {
-    renderPins(offers);
-    mapFilters.classList.remove('map__filters--disabled');
-    map.classList.remove('map--faded');
-    adForm.classList.remove('ad-form--disabled');
-    fieldsetHeaders.disabled = false;
-    fieldsetAddress.value = mainPinCoordinateActive;
-    toggleElementAvailability(fieldsetInputs, false);
-    mapPinMain.removeEventListener('mousedown', activatePageHandlerMousedown);
-    mapPinMain.removeEventListener('keydown', activatePageHandlerKeydown);
+    activatePage();
   }
 };
 
-var activatePageHandlerMousedown = function (evt) {
+var activatePageMousedownHandler = function (evt) {
   if (evt.button === 0) {
-    renderPins(offers);
-    mapFilters.classList.remove('map__filters--disabled');
-    map.classList.remove('map--faded');
-    adForm.classList.remove('ad-form--disabled');
-    fieldsetHeaders.disabled = false;
-    fieldsetAddress.value = mainPinCoordinateActive;
-    toggleElementAvailability(fieldsetInputs, false);
-    mapPinMain.removeEventListener('mousedown', activatePageHandlerMousedown);
-    mapPinMain.removeEventListener('keydown', activatePageHandlerKeydown);
+    activatePage();
   }
 };
 
-mapPinMain.addEventListener('mousedown', activatePageHandlerMousedown);
-mapPinMain.addEventListener('keydown', activatePageHandlerKeydown);
+mapPinMain.addEventListener('mousedown', activatePageMousedownHandler);
+mapPinMain.addEventListener('keydown', activatePageKeydownHandler);
 
 var findDisabledElement = function () {
 
-  var index = fieldsetCapacity.options.selectedIndex;
-  roomNumber.options[roomNumber.length - (index + 2)].selected = true;
-  var roomNumberLenght = roomNumber.options.length;
-
-  if (index === roomNumberLenght - 1) {
-    for (var j = 0; j < roomNumberLenght; j++) {
-      roomNumber.options[j].disabled = j < index;
+  var index = roomNumber.options.selectedIndex;
+  var selectedValue = roomNumber.options[index].value;
+  var fieldsetCapacityLength = fieldsetCapacity.options.length;
+  if (selectedValue < 100) {
+    fieldsetCapacity.options[fieldsetCapacityLength - (index + 2)].selected = true;
+    for (var j = 0; j < fieldsetCapacityLength; j++) {
+      fieldsetCapacity.options[j].disabled = (selectedValue < fieldsetCapacity.options[j].value) || (fieldsetCapacity.options[j].value === '0');
     }
   } else {
-    for (var k = 0; k < roomNumberLenght; k++) {
-      roomNumber.options[k].disabled = k > index;
+    fieldsetCapacity.options[fieldsetCapacityLength - 1].selected = true;
+    fieldsetCapacity.options[fieldsetCapacityLength - 1].disabled = false;
+    for (var k = 0; k < fieldsetCapacityLength - 1; k++) {
+      fieldsetCapacity.options[k].disabled = true;
     }
   }
 };
 
-fieldsetCapacity.addEventListener('change', function () {
+roomNumber.addEventListener('change', function () {
   findDisabledElement();
 });
 
-roomNumber.addEventListener('change', function () {
-
-  var index = roomNumber.options.selectedIndex;
-
-  var selectedValue = roomNumber.options[index].value;
-  var capacityLength = fieldsetCapacity.options.length;
-  if (selectedValue < 100) {
-    fieldsetCapacity.options[capacityLength - index - 2].selected = true;
-    for (var i = 0; i < capacityLength; i++) {
-      fieldsetCapacity.options[i].disabled = selectedValue < fieldsetCapacity.options[i].value;
-    }
-  } else {
-    fieldsetCapacity.options[capacityLength - 1].selected = true;
-    for (var j = 0; j < capacityLength - 1; j++) {
-      fieldsetCapacity.options[j].disabled = true;
-    }
-  }
-});
 
 var checkRoomsCapacity = function (rooms, capacity) {
   var message = '';
