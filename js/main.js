@@ -13,6 +13,8 @@ var MAX_Y_LOCATION = 630;
 var RADIX = 10;
 var MAINPIN_HEIGHT = 22;
 var ENTER = 'Enter';
+var MAX_LIST = 100;
+var GAP_LIST = 2;
 
 var getRandomValue = function (values) {
   return values[Math.floor(Math.random() * values.length)];
@@ -227,7 +229,7 @@ renderCard(offers[0]); */
 var fieldsetHeaders = document.querySelector('.ad-form-header');
 var fieldsetInputs = document.querySelectorAll('.ad-form__element');
 var adForm = document.querySelector('.ad-form');
-var adSubmit = adForm.querySelector('.ad-form__submit');
+// var adSubmit = adForm.querySelector('.ad-form__submit');
 var fieldsetAddress = document.querySelector('#address');
 var mapFilters = document.querySelector('.map__filters').children;
 var mapPinMain = document.querySelector('.map__pin--main');
@@ -257,6 +259,7 @@ var deactivateMap = function () {
   fieldsetAddress.readOnly = true;
   map.classList.add('map--faded');
   toggleElementAvailability(fieldsetInputs, true);
+  toggleElementAvailability(mapFilters, true);
 };
 
 var activatePage = function () {
@@ -293,8 +296,8 @@ var findDisabledElement = function () {
   var index = roomNumber.options.selectedIndex;
   var selectedValue = roomNumber.options[index].value;
   var fieldsetCapacityLength = fieldsetCapacity.options.length;
-  if (selectedValue < 100) {
-    fieldsetCapacity.options[fieldsetCapacityLength - (index + 2)].selected = true;
+  if (selectedValue < MAX_LIST) {
+    fieldsetCapacity.options[fieldsetCapacityLength - (index + GAP_LIST)].selected = true;
     for (var j = 0; j < fieldsetCapacityLength; j++) {
       fieldsetCapacity.options[j].disabled = (selectedValue < fieldsetCapacity.options[j].value) || (fieldsetCapacity.options[j].value === '0');
     }
@@ -312,23 +315,19 @@ roomNumber.addEventListener('change', function () {
 });
 
 
-var checkRoomsCapacity = function (rooms, capacity) {
-  var message = '';
-
-  if (rooms === '1' && capacity !== '1') {
-    message = '1 комната = 1 гость';
-  } else if (rooms === '2' && capacity !== '1' && capacity !== '2') {
-    message = '2 комнаты = 1 гость или 2 гостя';
-  } else if (rooms === '3' && capacity === '0') {
-    message = '3 комнаты = 1 гость, 2 гостя или 3 гостя';
-  } else if (rooms === '100' && capacity !== '0') {
-    message = '100 комнат = не для гостей';
+/* adSubmit.addEventListener('click', function () {
+  if (roomNumber.value === '1' && fieldsetCapacity.value !== '1') {
+    fieldsetCapacity.setCustomValidity = '1 комната = 1 гость';
+  } else if (roomNumber === '2' && fieldsetCapacity !== '1' && fieldsetCapacity !== '2') {
+    fieldsetCapacity.setCustomValidity = '2 комнаты = 1 гость или 2 гостя';
+  } else if (roomNumber === '3' && fieldsetCapacity === '0') {
+    fieldsetCapacity.setCustomValidity = '3 комнаты = 1 гость, 2 гостя или 3 гостя';
+  } else if (roomNumber === '100' && fieldsetCapacity !== '0') {
+    fieldsetCapacity.setCustomValidity = '100 комнат = не для гостей';
+  } else {
+    fieldsetCapacity.setCustomValidity('');
   }
-  capacity.setCustomValidity(message);
-};
+}); */
 
-adSubmit.addEventListener('click', function () {
-  checkRoomsCapacity(roomNumber.value, fieldsetCapacity.value);
-});
 
 deactivateMap();
