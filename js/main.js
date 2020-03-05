@@ -1,6 +1,5 @@
 'use strict';
 
-var TYPES = ['palace', 'flat', 'house', 'bungalo'];
 var TITLES = [];
 var TIMES = ['12:00', '13:00', '14:00'];
 var FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
@@ -15,6 +14,15 @@ var MAINPIN_HEIGHT = 22;
 var ENTER = 'Enter';
 var MAX_LIST = 100;
 var GAP_LIST = 2;
+var MIN_LENGTH_TITLE = 30;
+var MAX_LENGTH_TITLE = 100;
+
+var TypesMap = {
+  'flat': 'Квартира',
+  'bungalo': 'Бунгало',
+  'house': 'Дом',
+  'palace': 'Дворец'
+};
 
 var getRandomValue = function (values) {
   return values[Math.floor(Math.random() * values.length)];
@@ -31,6 +39,7 @@ var getRandomArray = function (array) {
 
 var createSimilarPinsArray = function (count) {
   var advertisements = [];
+  var TypeKeys = Object.keys(TypesMap);
 
   for (var i = 0; i < count; i++) {
     var locationX = getRandomNumber(MIN_X_LOCATION, MAX_X_LOCATION);
@@ -45,7 +54,7 @@ var createSimilarPinsArray = function (count) {
             title: TITLES[i],
             address: locationX + ', ' + locationY,
             price: getRandomNumber(0, 1000000),
-            type: getRandomValue(TYPES),
+            type: TypeKeys[getRandomNumber(0, TypeKeys.length - 1)],
             rooms: getRandomNumber(1, 5),
             guests: getRandomNumber(1, 8),
             checkin: getRandomValue(TIMES),
@@ -225,16 +234,18 @@ var renderCard = function (cards) {
 };
 renderCard(offers[0]); */
 
-
+var adForm = document.querySelector('.ad-form');
 var fieldsetHeaders = document.querySelector('.ad-form-header');
 var fieldsetInputs = document.querySelectorAll('.ad-form__element');
-var adForm = document.querySelector('.ad-form');
+
 // var adSubmit = adForm.querySelector('.ad-form__submit');
 var fieldsetAddress = document.querySelector('#address');
 var mapFilters = document.querySelector('.map__filters').children;
 var mapPinMain = document.querySelector('.map__pin--main');
 var fieldsetCapacity = document.querySelector('#capacity');
 var roomNumber = document.querySelector('#room_number');
+var notice = document.querySelector('.notice');
+
 
 var getCoordinates = function (point, size) {
   return parseInt(point, RADIX) + Math.round(size * 0.5);
@@ -329,5 +340,67 @@ roomNumber.addEventListener('change', function () {
   }
 }); */
 
-
 deactivateMap();
+
+var titleInput = notice.querySelector('#title');
+titleInput.required = true;
+
+var titleInputLength = {
+  min: MIN_LENGTH_TITLE,
+  max: MAX_LENGTH_TITLE
+};
+
+titleInput.addEventListener('change', function () {
+  if (titleInput.value.length < titleInputLength.min || titleInput.value.length > titleInputLength.max) {
+    titleInput.setCustomValidity('Необходимо от 30 до 100 символов');
+  } else {
+    titleInput.setCustomValidity('');
+  }
+});
+
+var priceInput = notice.querySelector('#price');
+
+priceInput.required = true;
+priceInput.type = 'number';
+priceInput.max = 1000000;
+
+var price = notice.querySelector('#price');
+
+var type = notice.querySelector('#type');
+
+var setMinPriceOfType = function (evt) {
+  var MinPrice = {
+    bungalo: 0,
+    flat: 1000,
+    house: 5000,
+    palace: 10000
+  };
+
+  price.placeholder = MinPrice[evt.target.value];
+  price.min = MinPrice[evt.target.value];
+};
+
+type.addEventListener('change', function (evt) {
+  setMinPriceOfType(evt);
+});
+
+var timeIn = notice.querySelector('#timein');
+var timeOut = notice.querySelector('#timeout');
+var setTime = function (evt, time) {
+  time.value = evt.target.value;
+};
+
+timeIn.addEventListener('change', function (evt) {
+  setTime(evt, timeOut);
+});
+
+timeOut.addEventListener('change', function (evt) {
+  setTime(evt, timeIn);
+});
+
+
+var imageInput = notice.querySelector('#images');
+imageInput.accept = 'image/*';
+
+var avatar = notice.querySelector('#avatar');
+avatar.accept = 'image/*';
