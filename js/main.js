@@ -17,7 +17,7 @@ var GAP_LIST = 2;
 var MIN_LENGTH_TITLE = 30;
 var MAX_LENGTH_TITLE = 100;
 
-var TypesMap = {
+var typesMap = {
   'flat': 'Квартира',
   'bungalo': 'Бунгало',
   'house': 'Дом',
@@ -39,7 +39,7 @@ var getRandomArray = function (array) {
 
 var createSimilarPinsArray = function (count) {
   var advertisements = [];
-  var TypeKeys = Object.keys(TypesMap);
+  var TypeKeys = Object.keys(typesMap);
 
   for (var i = 0; i < count; i++) {
     var locationX = getRandomNumber(MIN_X_LOCATION, MAX_X_LOCATION);
@@ -103,11 +103,6 @@ var renderPins = function (pins) {
   similarPinsElement.appendChild(fragmentPin);
 };
 
-/* var similarTemplateCard = document.querySelector('#card')
-.content
-.querySelector('.map__card');
-var elementBeforeCard = document.querySelector('.map__filters-container');
-
 var getTypes = function (type) {
   switch (type) {
     case 'palace':
@@ -122,8 +117,6 @@ var getTypes = function (type) {
       return type;
   }
 };
-
-var fragment = document.createDocumentFragment();
 
 var renderFeatures = function (element, features) {
   element.querySelector('.popup__features').innerHTML = '';
@@ -149,9 +142,11 @@ var hideElement = function (element) {
   element.style.display = 'none';
 };
 
-/* var createCard = function (card) {
+var similarTemplateCard = document.querySelector('#card')
+  .content
+  .querySelector('.map__card');
+var createCard = function (card) {
   var cardElement = similarTemplateCard.cloneNode(true);
-
   var popupTitle = cardElement.querySelector('.popup__title');
   if (isNotEmpty(card.offer.title)) {
     popupTitle.textContent = card.offer.title;
@@ -227,7 +222,7 @@ var hideElement = function (element) {
   return cardElement;
 };
 
-var renderCard = function (cards) {
+/* var renderCard = function (cards) {
   fragment.appendChild(createCard(cards));
 
   elementBeforeCard.before(fragment);
@@ -237,10 +232,9 @@ renderCard(offers[0]); */
 var adForm = document.querySelector('.ad-form');
 var fieldsetHeaders = document.querySelector('.ad-form-header');
 var fieldsetInputs = document.querySelectorAll('.ad-form__element');
-
-// var adSubmit = adForm.querySelector('.ad-form__submit');
 var fieldsetAddress = document.querySelector('#address');
 var mapFilters = document.querySelector('.map__filters').children;
+var elementBeforeCard = document.querySelector('.map__filters-container');
 var mapPinMain = document.querySelector('.map__pin--main');
 var fieldsetCapacity = document.querySelector('#capacity');
 var roomNumber = document.querySelector('#room_number');
@@ -279,6 +273,8 @@ var activatePage = function () {
   adForm.classList.remove('ad-form--disabled');
   fieldsetHeaders.disabled = false;
   fieldsetAddress.value = mainPinCoordinateActive;
+  pinClickHandler();
+  pinEnterPressHandler();
   toggleElementAvailability(mapFilters, true);
   toggleElementAvailability(fieldsetInputs, false);
 
@@ -325,21 +321,6 @@ roomNumber.addEventListener('change', function () {
   findDisabledElement();
 });
 
-
-/* adSubmit.addEventListener('click', function () {
-  if (roomNumber.value === '1' && fieldsetCapacity.value !== '1') {
-    fieldsetCapacity.setCustomValidity = '1 комната = 1 гость';
-  } else if (roomNumber === '2' && fieldsetCapacity !== '1' && fieldsetCapacity !== '2') {
-    fieldsetCapacity.setCustomValidity = '2 комнаты = 1 гость или 2 гостя';
-  } else if (roomNumber === '3' && fieldsetCapacity === '0') {
-    fieldsetCapacity.setCustomValidity = '3 комнаты = 1 гость, 2 гостя или 3 гостя';
-  } else if (roomNumber === '100' && fieldsetCapacity !== '0') {
-    fieldsetCapacity.setCustomValidity = '100 комнат = не для гостей';
-  } else {
-    fieldsetCapacity.setCustomValidity('');
-  }
-}); */
-
 deactivateMap();
 
 var titleInput = notice.querySelector('#title');
@@ -368,14 +349,14 @@ var price = notice.querySelector('#price');
 
 var type = notice.querySelector('#type');
 
-var setMinPriceOfType = function (evt) {
-  var MinPrice = {
-    bungalo: 0,
-    flat: 1000,
-    house: 5000,
-    palace: 10000
-  };
+var MinPrice = {
+  bungalo: 0,
+  flat: 1000,
+  house: 5000,
+  palace: 10000
+};
 
+var setMinPriceOfType = function (evt) {
   price.placeholder = MinPrice[evt.target.value];
   price.min = MinPrice[evt.target.value];
 };
@@ -404,3 +385,63 @@ imageInput.accept = 'image/*';
 
 var avatar = notice.querySelector('#avatar');
 avatar.accept = 'image/*';
+
+// Обработчик открытия карточки по клику по метке
+var pinClickHandler = function () {
+  var userPins = document.querySelectorAll('.map__pin:not(.map__pin--main)');
+  userPins.forEach(function (element, i) {
+    element.addEventListener('click', function () {
+      var popup = document.querySelector('.popup');
+      if (popup) {
+        popup.remove();
+      }
+      var fragment = document.createDocumentFragment();
+      var cardElement = similarTemplateCard.cloneNode(true);
+      fragment.appendChild(createCard(offers[i], cardElement));
+      map.insertBefore(fragment, elementBeforeCard);
+      closePopup();
+    });
+  });
+};
+
+// Обработчик открытия карточки по нажатию на Enter
+var pinEnterPressHandler = function () {
+  var userPins = document.querySelectorAll('.map__pin:not(.map__pin--main)');
+  userPins.forEach(function (element, i) {
+    element.addEventListener('keydown', function (evt) {
+      if (evt.key === 'Enter') {
+        var popup = document.querySelector('.popup');
+        if (popup) {
+          popup.remove();
+        }
+        var cardElement = similarTemplateCard.cloneNode(true);
+        var cardsFragment = document.createDocumentFragment();
+        cardsFragment.appendChild(createCard(offers[i], cardElement));
+        map.insertBefore(cardsFragment, elementBeforeCard);
+        closePopup();
+      }
+    });
+  });
+};
+
+// Обработчик закрытия карточки по клику или нажатию на Enter/ESC
+var closePopup = function () {
+  var popup = document.querySelector('.popup');
+  var popupClose = popup.querySelector('.popup__close');
+
+  popupClose.addEventListener('click', function () {
+    popup.remove();
+  });
+
+  popupClose.addEventListener('keydown', function (evt) {
+    if (evt.key === 'Enter') {
+      popup.remove();
+    }
+  });
+
+  document.addEventListener('keydown', function (evt) {
+    if (evt.key === 'Escape') {
+      popup.remove();
+    }
+  });
+};
