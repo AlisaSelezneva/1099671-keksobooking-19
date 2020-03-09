@@ -424,7 +424,7 @@ var pinEnterPressHandler = function () {
   });
 };
 
-// Обработчик закрытия карточки по клику или нажатию на Enter/ESC
+// Обработчик закрытия карточки по клику или нажатию на ESC
 var closePopup = function () {
   var popup = document.querySelector('.popup');
   var popupClose = popup.querySelector('.popup__close');
