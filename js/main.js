@@ -88,7 +88,22 @@ var renderSimilarPin = function (similarPin) {
   pinElement.querySelector('img').src = similarPin.author.avatar;
   pinElement.alt = similarPin.offer.title;
 
+  pinElement.addEventListener('click', function (evt) {
+    setPopupCloseHandlers();
+    createCard(similarPin);
+
+    evt.currentTarget.classList.add('map__pin--active');
+  });
+
   return pinElement;
+};
+
+var removeClassActive = function () {
+  var activePin = map.querySelector('.map__pin--active');
+
+  if (activePin) {
+    activePin.classList.remove('map__pin--active');
+  }
 };
 
 var similarPinsElement = document.querySelector('.map__pins');
@@ -273,7 +288,7 @@ var activatePage = function () {
   adForm.classList.remove('ad-form--disabled');
   fieldsetHeaders.disabled = false;
   fieldsetAddress.value = mainPinCoordinateActive;
-  pinClickHandler();
+  setPinClickHandlers();
   pinEnterPressHandler();
   toggleElementAvailability(mapFilters, true);
   toggleElementAvailability(fieldsetInputs, false);
@@ -386,23 +401,28 @@ imageInput.accept = 'image/*';
 var avatar = notice.querySelector('#avatar');
 avatar.accept = 'image/*';
 
+
 // Обработчик открытия карточки по клику по метке
-var pinClickHandler = function () {
+var setPinClickHandlers = function () {
   var userPins = document.querySelectorAll('.map__pin:not(.map__pin--main)');
   userPins.forEach(function (element, i) {
     element.addEventListener('click', function () {
-      var popup = document.querySelector('.popup');
-      if (popup) {
-        popup.remove();
-      }
-      var fragment = document.createDocumentFragment();
-      var cardElement = similarTemplateCard.cloneNode(true);
-      fragment.appendChild(createCard(offers[i], cardElement));
-      map.insertBefore(fragment, elementBeforeCard);
-      closePopup();
+      setPinHandler(i);
     });
   });
 };
+function setPinHandler(i) {
+  removeClassActive();
+  var popup = document.querySelector('.popup');
+  if (popup) {
+    popup.remove();
+  }
+  var fragment = document.createElement('div'); // createDocumentFragment();
+  var cardElement = similarTemplateCard.cloneNode(true);
+  fragment.appendChild(createCard(offers[i], cardElement));
+  map.insertBefore(fragment, elementBeforeCard);
+  setPopupCloseHandlers();
+}
 
 // Обработчик открытия карточки по нажатию на Enter
 var pinEnterPressHandler = function () {
@@ -410,38 +430,38 @@ var pinEnterPressHandler = function () {
   userPins.forEach(function (element, i) {
     element.addEventListener('keydown', function (evt) {
       if (evt.key === 'Enter') {
-        var popup = document.querySelector('.popup');
-        if (popup) {
-          popup.remove();
-        }
-        var cardElement = similarTemplateCard.cloneNode(true);
-        var cardsFragment = document.createDocumentFragment();
-        cardsFragment.appendChild(createCard(offers[i], cardElement));
-        map.insertBefore(cardsFragment, elementBeforeCard);
-        closePopup();
+        setPinHandler(i);
       }
     });
   });
 };
 
+function closeHandler(popup) {
+  popup.remove();
+  removeClassActive();
+}
+
 // Обработчик закрытия карточки по клику или нажатию на ESC
-var closePopup = function () {
+var setPopupCloseHandlers = function () {
+
   var popup = document.querySelector('.popup');
   var popupClose = popup.querySelector('.popup__close');
 
+
   popupClose.addEventListener('click', function () {
-    popup.remove();
+    closeHandler(popup);
   });
 
   popupClose.addEventListener('keydown', function (evt) {
     if (evt.key === 'Enter') {
-      popup.remove();
+      closeHandler(popup);
     }
   });
 
   document.addEventListener('keydown', function (evt) {
     if (evt.key === 'Escape') {
-      popup.remove();
+      closeHandler(popup);
+
     }
   });
 };
