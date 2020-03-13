@@ -400,12 +400,12 @@ var setPinClickHandlers = function () {
   var userPins = document.querySelectorAll('.map__pin:not(.map__pin--main)');
   userPins.forEach(function (element, i) {
     element.addEventListener('click', function () {
-      pinHandler(i);
+      openPopup(i);
     });
   });
 };
 
-var pinHandler = function (i) {
+var openPopup = function (i) {
   removeClassActive();
   var popup = document.querySelector('.popup');
   if (popup) {
@@ -424,24 +424,24 @@ var pinEnterPressHandler = function () {
   userPins.forEach(function (element, i) {
     element.addEventListener('keydown', function (evt) {
       if (evt.key === 'Enter') {
-        pinHandler(i);
+        openPopup(i);
       }
     });
   });
 };
 
-var escHandler = function (evt) {
+var popupPressEscHandler = function (evt) {
   if (evt.key === 'Escape') {
     var popup = document.querySelector('.popup');
-    closeHandler(popup);
+    removePopup(popup);
   }
 };
 
 
-var closeHandler = function (popup) {
+var removePopup = function (popup) {
   popup.remove();
   removeClassActive();
-  document.removeEventListener('keydown', escHandler);
+  document.removeEventListener('keydown', popupPressEscHandler);
 };
 
 // Обработчик закрытия карточки по клику или нажатию на ESC
@@ -452,13 +452,13 @@ var setPopupCloseHandlers = function () {
 
 
   popupClose.addEventListener('click', function () {
-    closeHandler(popup);
+    removePopup(popup);
   });
 
   popupClose.addEventListener('keydown', function (evt) {
     if (evt.key === 'Enter') {
-      closeHandler(popup);
+      removePopup(popup);
     }
   });
-  document.addEventListener('keydown', escHandler);
+  document.addEventListener('keydown', popupPressEscHandler);
 };
