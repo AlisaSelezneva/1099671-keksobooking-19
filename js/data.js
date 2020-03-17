@@ -52,6 +52,7 @@
   // Иконки попапа, случайные (features)
   var getRandomArray = function (array) {
     return array.slice(0, getRandomNumber(1, array.length));
+  };
 
   // Возвращает Массив пинов со случайными параметрами
   var createSimilarPinsArray = function (count) {
@@ -93,12 +94,19 @@
 
   var offers = createSimilarPinsArray(OFFER_COUNT); // Массив пинов со случаными параметрами
 
-  // Вспомогательная функция для проверки на отсутствие данных
-  var isNotEmpty = function (data) {
-    return typeof data !== 'undefined' && data.length > 0;
-  };
-
   var getCoordinates = function (point, size) {
     return parseInt(point, RADIX) + Math.round(size * 0.5);
+  };
+
+  window.data = {
+    getTypes: getTypes,
+    getCoordinates: getCoordinates,
+    offers: offers,
+    ENTER: ENTER,
+    MAINPIN_HEIGHT: MAINPIN_HEIGHT,
+    MAX_LIST: MAX_LIST,
+    GAP_LIST: GAP_LIST,
+    MIN_LENGTH_TITLE: MIN_LENGTH_TITLE,
+    MAX_LENGTH_TITLE: MAX_LENGTH_TITLE,
   };
 })();

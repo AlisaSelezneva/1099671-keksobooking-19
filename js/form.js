@@ -14,10 +14,10 @@
   var notice = document.querySelector('.notice');
 
   // Получение координат активационного пина
-  var mainPinX = getCoordinates(mapPinMain.style.left, mapPinMain.offsetWidth);
-  var mainPinY = getCoordinates(mapPinMain.style.top, mapPinMain.offsetHeight);
+  var mainPinX = window.data.getCoordinates(mapPinMain.style.left, mapPinMain.offsetWidth);
+  var mainPinY = window.data.getCoordinates(mapPinMain.style.top, mapPinMain.offsetHeight);
   //
-  var mainPinActiveY = mainPinY + MAINPIN_HEIGHT;
+  var mainPinActiveY = mainPinY + window.data.MAINPIN_HEIGHT;
   var mainPinCoordinate = mainPinX + ', ' + mainPinY;
   var mainPinCoordinateActive = mainPinX + ', ' + mainPinActiveY;
 
@@ -27,8 +27,8 @@
     var index = roomNumber.options.selectedIndex;
     var selectedValue = roomNumber.options[index].value;
     var fieldsetCapacityLength = fieldsetCapacity.options.length;
-    if (selectedValue < MAX_LIST) {
-      fieldsetCapacity.options[fieldsetCapacityLength - (index + GAP_LIST)].selected = true;
+    if (selectedValue < window.data.MAX_LIST) {
+      fieldsetCapacity.options[fieldsetCapacityLength - (index + window.data.GAP_LIST)].selected = true;
       for (var j = 0; j < fieldsetCapacityLength; j++) {
         fieldsetCapacity.options[j].disabled = (selectedValue < fieldsetCapacity.options[j].value) || (fieldsetCapacity.options[j].value === '0');
       }
@@ -51,8 +51,8 @@
   titleInput.required = true;
 
   var titleInputLength = {
-    min: MIN_LENGTH_TITLE,
-    max: MAX_LENGTH_TITLE
+    min: window.data.MIN_LENGTH_TITLE,
+    max: window.data.MAX_LENGTH_TITLE
   };
 
   titleInput.addEventListener('change', function () {
@@ -111,4 +111,24 @@
   avatar.accept = 'image/*';
 
   // конец валидации
+
+  // Переключатель доступности элементов
+  var toggleElementAvailability = function (elements, status) {
+    for (var i = 0; i < elements.length; i++) {
+      elements[i].disabled = status;
+    }
+  };
+
+  window.form = {
+    fieldsetHeaders: fieldsetHeaders,
+    fieldsetAddress: fieldsetAddress,
+    fieldsetInputs: fieldsetInputs,
+    toggleElementAvailability: toggleElementAvailability,
+    elementBeforeCard: elementBeforeCard,
+    adForm: adForm,
+    mapFilters: mapFilters,
+    mainPinCoordinate: mainPinCoordinate,
+    mainPinCoordinateActive: mainPinCoordinateActive,
+    mapPinMain: mapPinMain,
+  };
 })();

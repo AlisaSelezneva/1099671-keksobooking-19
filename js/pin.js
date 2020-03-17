@@ -17,4 +17,9 @@
     return pinElement;
   };
 
+  window.pin = {
+    renderSimilarPin: renderSimilarPin,
+    similarPinsElement: similarPinsElement,
+  };
+
 })();
