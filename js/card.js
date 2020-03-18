@@ -4,6 +4,7 @@
 (function () {
 
   var similarTemplateCard = document.querySelector('#card').content.querySelector('.map__card'); // article внутри template id=card
+  var elementBeforeCard = document.querySelector('.map__filters-container');
 
   // скрытие элемента
   var hideElement = function (element) {
@@ -36,7 +37,7 @@
 
     var popupType = cardElement.querySelector('.popup__type');
     if (isNotEmpty(card.offer.type)) {
-      popupType.textContent = window.data.getTypes[card.offer.type];
+      popupType.textContent = window.data.typesMap[card.offer.type];
     } else {
       hideElement(popupType);
     }
@@ -99,7 +100,7 @@
     var fragment = document.createElement('div'); // createDocumentFragment();
     var cardElement = similarTemplateCard.cloneNode(true);
     fragment.appendChild(createCard(window.data.offers[i], cardElement));
-    window.map.map.insertBefore(fragment, window.form.elementBeforeCard);
+    window.map.cardList.insertBefore(fragment, elementBeforeCard);
     window.map.setPopupCloseHandlers(); // вешаем обработчик клика по крестику на попапе
   };
 

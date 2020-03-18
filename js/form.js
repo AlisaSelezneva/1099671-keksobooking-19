@@ -7,7 +7,6 @@
   var fieldsetInputs = document.querySelectorAll('.ad-form__element');
   var fieldsetAddress = document.querySelector('#address');
   var mapFilters = document.querySelector('.map__filters').children;
-  var elementBeforeCard = document.querySelector('.map__filters-container');
   var mapPinMain = document.querySelector('.map__pin--main');
   var fieldsetCapacity = document.querySelector('#capacity');
   var roomNumber = document.querySelector('#room_number');
@@ -119,16 +118,54 @@
     }
   };
 
+  // отключает карту
+  var deactivateMap = function () {
+
+    fieldsetHeaders.disabled = true;
+    fieldsetAddress.value = mainPinCoordinate;
+    fieldsetAddress.readOnly = true;
+    window.map.cardList.classList.add('map--faded');
+    toggleElementAvailability(fieldsetInputs, true); // отключает поля форпмы
+    toggleElementAvailability(mapFilters, true); // отключает фильтры под картой
+  };
+
+  var activatePage = function () {
+    window.map.renderPins(window.data.offers); // отрисовка пинов
+    window.map.cardList.classList.remove('map--faded');
+    adForm.classList.remove('ad-form--disabled');
+    fieldsetHeaders.disabled = false;
+    fieldsetAddress.value = mainPinCoordinateActive;
+    window.map.setPinClickHandlers(); // вешает обработчик на пины
+    window.map.setPinsKeydownHandlers(); // обработчик нажатия энтера на пинах
+    toggleElementAvailability(mapFilters, true); // отключаем поля фильтра
+    toggleElementAvailability(fieldsetInputs, false); // включаем поля формы
+
+    mapPinMain.removeEventListener('mousedown', mainPinMousedownHandler);
+    mapPinMain.removeEventListener('keydown', mainPinKeydownHandler);
+
+  };
+
+  // активация клик
+  var mainPinMousedownHandler = function (evt) {
+    if (evt.button === 0) {
+      activatePage();
+    }
+  };
+
+  // активация энтер
+  var mainPinKeydownHandler = function (evt) {
+    if (evt.key === window.data.ENTER) {
+      activatePage();
+    }
+  };
+
+  mapPinMain.addEventListener('mousedown', mainPinMousedownHandler); // нажатие на главный пин мышкой для активации страницы
+  mapPinMain.addEventListener('keydown', mainPinKeydownHandler); // нажатие на на энтер для активации страницы
+
+  deactivateMap(); // вызов отключения карты (при старте сайта)
+
   window.form = {
-    fieldsetHeaders: fieldsetHeaders,
-    fieldsetAddress: fieldsetAddress,
-    fieldsetInputs: fieldsetInputs,
-    toggleElementAvailability: toggleElementAvailability,
-    elementBeforeCard: elementBeforeCard,
-    adForm: adForm,
-    mapFilters: mapFilters,
-    mainPinCoordinate: mainPinCoordinate,
-    mainPinCoordinateActive: mainPinCoordinateActive,
-    mapPinMain: mapPinMain,
+    deactivateMap: deactivateMap,
+    activatePage: activatePage,
   };
 })();

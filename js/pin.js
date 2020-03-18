@@ -3,12 +3,10 @@
 
 
 (function () {
-  var similarTemplatePin = document.querySelector('#pin').content.querySelector('.map__pin'); // Кнопка внутри template id=pin
-  var similarPinsElement = document.querySelector('.map__pins'); // div внутри секции map
 
   // создание конкретного пина с координатами и аватаркой
   var renderSimilarPin = function (similarPin) {
-    var pinElement = similarTemplatePin.cloneNode(true); // клонирует кнопку template id=pin
+    var pinElement = window.map.similarTemplatePin.cloneNode(true); // клонирует кнопку template id=pin
     pinElement.style.left = similarPin.location.locationX + 'px';
     pinElement.style.top = similarPin.location.locationY + 'px';
     pinElement.querySelector('img').src = similarPin.author.avatar;
@@ -18,8 +16,6 @@
   };
 
   window.pin = {
-    renderSimilarPin: renderSimilarPin,
-    similarPinsElement: similarPinsElement,
+    renderSimilarPin: renderSimilarPin
   };
-
 })();

@@ -26,21 +26,6 @@
     'palace': 'Дворец'
   };
 
-  var getTypes = function (type) {
-    switch (type) {
-      case 'palace':
-        return 'Дворец';
-      case 'flat':
-        return 'Квартира';
-      case 'house':
-        return 'Дом';
-      case 'bungalo':
-        return 'Бунгало';
-      default:
-        return type;
-    }
-  };
-
   var getRandomValue = function (values) {
     return values[Math.floor(Math.random() * values.length)];
   };
@@ -99,7 +84,7 @@
   };
 
   window.data = {
-    getTypes: getTypes,
+    typesMap: typesMap,
     getCoordinates: getCoordinates,
     offers: offers,
     ENTER: ENTER,
