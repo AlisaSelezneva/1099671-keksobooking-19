@@ -1,6 +1,7 @@
 'use strict';
 // модуль управления карточками объявления и матками, осуществляет их взаимодейтсвие
 (function () {
+
   var cardList = document.querySelector('.map'); // вся карта
   var similarPinsElement = document.querySelector('.map__pins'); // div внутри секции map
   var similarTemplatePin = document.querySelector('#pin').content.querySelector('.map__pin'); // Кнопка внутри template id=pin

@@ -4,7 +4,6 @@
 (function () {
 
   var similarTemplateCard = document.querySelector('#card').content.querySelector('.map__card'); // article внутри template id=card
-  var elementBeforeCard = document.querySelector('.map__filters-container');
 
   // скрытие элемента
   var hideElement = function (element) {
@@ -97,10 +96,9 @@
     if (popup) { // если попап существует - удаляем его
       popup.remove();
     }
-    var fragment = document.createElement('div'); // createDocumentFragment();
+    // var fragment = document.createElement('div'); // createDocumentFragment();
     var cardElement = similarTemplateCard.cloneNode(true);
-    fragment.appendChild(createCard(window.data.offers[i], cardElement));
-    window.map.cardList.insertBefore(fragment, elementBeforeCard);
+    window.map.cardList.appendChild(createCard(window.data.offers[i], cardElement));
     window.map.setPopupCloseHandlers(); // вешаем обработчик клика по крестику на попапе
   };
 
