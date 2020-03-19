@@ -12,8 +12,11 @@
   var MIN_Y_LOCATION = 130;
   var MAX_Y_LOCATION = 630;
   var RADIX = 10;
-  var MAINPIN_HEIGHT = 22;
+  var PIN_HEIGHT = 22;
+  var MAINPIN_HEIGHT = 65;
+  var MAINPIN_WIDTH = 65;
   var ENTER = 'Enter';
+  var MOUSE_LEFT = 0;
   var MAX_LIST = 100;
   var GAP_LIST = 2;
   var MIN_LENGTH_TITLE = 30;
@@ -24,21 +27,6 @@
     'bungalo': 'Бунгало',
     'house': 'Дом',
     'palace': 'Дворец'
-  };
-
-  var getTypes = function (type) {
-    switch (type) {
-      case 'palace':
-        return 'Дворец';
-      case 'flat':
-        return 'Квартира';
-      case 'house':
-        return 'Дом';
-      case 'bungalo':
-        return 'Бунгало';
-      default:
-        return type;
-    }
   };
 
   var getRandomValue = function (values) {
@@ -98,15 +86,25 @@
     return parseInt(point, RADIX) + Math.round(size * 0.5);
   };
 
+  // var getMainPinCoordinates = (parseInt(window.form.mapPinMain.style.left, RADIX) + Math.round(MAINPIN_WIDTH / 2)) + ', ' + (parseInt(window.form.mapPinMain.style.top, RADIX) + Math.round(MAINPIN_HEIGHT / 2) + PIN_HEIGHT);
+
   window.data = {
-    getTypes: getTypes,
+    typesMap: typesMap,
     getCoordinates: getCoordinates,
     offers: offers,
     ENTER: ENTER,
+    MOUSE_LEFT: MOUSE_LEFT,
+    PIN_HEIGHT: PIN_HEIGHT,
+    RADIX: RADIX,
+    MAINPIN_WIDTH: MAINPIN_WIDTH,
     MAINPIN_HEIGHT: MAINPIN_HEIGHT,
     MAX_LIST: MAX_LIST,
     GAP_LIST: GAP_LIST,
     MIN_LENGTH_TITLE: MIN_LENGTH_TITLE,
     MAX_LENGTH_TITLE: MAX_LENGTH_TITLE,
+    MIN_Y_LOCATION: MIN_Y_LOCATION,
+    MAX_Y_LOCATION: MAX_Y_LOCATION,
+    MIN_X_LOCATION: MIN_X_LOCATION,
+    MAX_X_LOCATION: MAX_X_LOCATION,
   };
 })();
