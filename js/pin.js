@@ -5,7 +5,7 @@
 (function () {
 
   // создание конкретного пина с координатами и аватаркой
-  var renderSimilarPin = function (similarPin) {
+  var renderSimilarCard = function (similarPin) {
     var pinElement = window.map.similarTemplatePin.cloneNode(true); // клонирует кнопку template id=pin
     pinElement.style.left = similarPin.location.locationX + 'px';
     pinElement.style.top = similarPin.location.locationY + 'px';
@@ -16,6 +16,6 @@
   };
 
   window.pin = {
-    renderSimilarPin: renderSimilarPin
+    renderSimilarCard: renderSimilarCard
   };
 })();

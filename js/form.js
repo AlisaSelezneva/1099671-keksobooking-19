@@ -125,6 +125,9 @@
     window.map.cardList.classList.add('map--faded');
     toggleElementAvailability(fieldsetInputs, true); // отключает поля форпмы
     toggleElementAvailability(mapFilters, true); // отключает фильтры под картой
+
+    mapPinMain.addEventListener('mousedown', mainPinMousedownHandler); // нажатие на главный пин мышкой для активации страницы
+    mapPinMain.addEventListener('keydown', mainPinKeydownHandler); // нажатие на на энтер для активации страницы
   };
 
   var activatePage = function () {
@@ -218,9 +221,6 @@
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
   });
-
-  mapPinMain.addEventListener('mousedown', mainPinMousedownHandler); // нажатие на главный пин мышкой для активации страницы
-  mapPinMain.addEventListener('keydown', mainPinKeydownHandler); // нажатие на на энтер для активации страницы
 
   deactivateMap(); // вызов отключения карты (при старте сайта)
 })();

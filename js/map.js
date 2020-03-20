@@ -11,7 +11,7 @@
     var fragmentPin = document.createDocumentFragment();
 
     for (var i = 0; i < pins.length; i++) {
-      fragmentPin.appendChild(window.pin.renderSimilarPin(pins[i]));
+      fragmentPin.appendChild(window.pin.renderSimilarCard(pins[i]));
     }
 
     similarPinsElement.appendChild(fragmentPin);
